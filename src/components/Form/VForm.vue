@@ -68,7 +68,7 @@ textarea {
   height: 99px;
   margin: 12px 20px;
   border: none;
-  border-bottom: 2px solid #ff8000;
+  border-bottom: 1px solid #ff8000;
   resize: none;
   font-family: 'Farsan';
   font-size: large;
@@ -76,6 +76,7 @@ textarea {
 }
 textarea:focus {
   outline: none;
+  border-bottom: 2px solid #ff8000;
 }
 .v_form_submit {
   background-color: #ff9000;
