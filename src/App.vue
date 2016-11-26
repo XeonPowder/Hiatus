@@ -58,11 +58,11 @@ body{
 }
 ::-webkit-scrollbar-thumb {
   background: #e1e1e1;
-  border: 0px none #ffffff;
+  border: 0px none #ff8000;
   border-radius: 1px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffffff;
+  background: #ff8000;
 }
 ::-webkit-scrollbar-thumb:active {
   background: #000000;

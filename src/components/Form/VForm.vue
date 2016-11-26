@@ -46,6 +46,7 @@ export default{
 input {
   font-size: large;
   font-family: 'Farsan';
+  background-color: #E6E6E6;
 }
 input[type=number] {
   width: 10% !important;
@@ -71,6 +72,7 @@ textarea {
   resize: none;
   font-family: 'Farsan';
   font-size: large;
+  background-color: #E6E6E6;
 }
 textarea:focus {
   outline: none;
