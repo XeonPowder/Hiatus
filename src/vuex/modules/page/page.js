@@ -5,12 +5,13 @@ const state = {
   data: {
     page: 'home',
     location: 'home',
-    validLocations: ['home', 'about', 'timeline', 'roster'],
+    validLocations: ['home', 'about', 'timeline', 'roster', 'apply'],
     title: {
       home: 'Sanctity',
       about: 'About',
       timeline: 'Timeline',
       roster: 'Roster',
+      apply: 'Apply',
       unknown: 'Unknown Title'
     },
     subtitle: {
@@ -18,6 +19,7 @@ const state = {
       about: 'At Sanctity we strive...',
       timeline: 'On x we did y',
       roster: 'Raiders....',
+      apply: 'Do you have what it takes?',
       unknown: 'unknown subtitle'
     }
   }

@@ -1,19 +1,25 @@
 <template>
   <div class="homepage">
   <transition name="fade" mode="out-in">
-    <holder :key="location" :title="title" :subtitle="subtitle">
-    </holder>
+    <div :key="location">
+      <holder :title="title" :subtitle="subtitle">
+        <div v-if="location === 'apply'">
+          <v-form></v-form>
+        </div>
+      </holder>
+    </div>
   </transition>
   </div>
 </template>
 
 <script>
 import Holder from '../Holder/Holder'
-
+import VForm from '../Form/VForm'
 export default {
   name: 'homepage',
   components: {
-    'holder': Holder
+    Holder,
+    VForm
   },
   computed: {
     location () {
@@ -29,6 +35,8 @@ export default {
           return this.$store.getters.page.title.timeline
         case 'roster':
           return this.$store.getters.page.title.roster
+        case 'apply':
+          return this.$store.getters.page.title.apply
         default:
           return this.$store.getters.page.title.unknown
       }
@@ -43,6 +51,8 @@ export default {
           return this.$store.getters.page.subtitle.timeline
         case 'roster':
           return this.$store.getters.page.subtitle.roster
+        case 'apply':
+          return this.$store.getters.page.subtitle.apply
         default:
           return this.$store.getters.page.subtitle.unknown
       }

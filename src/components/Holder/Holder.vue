@@ -24,6 +24,10 @@ h2 {
   font-weight: normal;
 }
 .holder{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 50%;
+  margin: auto;
   background-color: #E9E9E9;
   -webkit-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.1);
   -moz-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.1);

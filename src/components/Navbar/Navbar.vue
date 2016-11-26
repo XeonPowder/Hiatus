@@ -14,8 +14,9 @@
         <ul :key="page" v-if="!isForum()">
           <li :class="{active: isActive('home')}" @click="moveTo('home')">Home</li>
           <li :class="{active: isActive('about')}" @click="moveTo('about')">About</li>
-          <li :class="{active: isActive('timeline')}" @click="moveTo('timeline')">Timeline</li>
+          <li :class="{active: isActive('apply')}" @click="moveTo('apply')">Apply</li>
           <li :class="{active: isActive('roster')}" @click="moveTo('roster')">Roster</li>
+          <li :class="{active: isActive('timeline')}" @click="moveTo('timeline')">Timeline</li>
         </ul>
     </div>
     </transition>
