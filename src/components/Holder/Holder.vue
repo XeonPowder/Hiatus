@@ -28,7 +28,7 @@ h2 {
   margin-bottom: 10px;
   width: 50%;
   margin: auto;
-  background-color: #BDBDBD;
+  background-color: #E6E6E6;
   -webkit-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.1);
   -moz-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.1);
   box-shadow: -2px 1px 7px 16px rgba(0,0,0,.1);
