@@ -16,7 +16,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1 {
-  color: #555555;
+  color: #000000;
   font-weight: normal;
 }
 h2 {
@@ -28,7 +28,7 @@ h2 {
   margin-bottom: 10px;
   width: 50%;
   margin: auto;
-  background-color: #E9E9E9;
+  background-color: #BDBDBD;
   -webkit-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.1);
   -moz-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.1);
   box-shadow: -2px 1px 7px 16px rgba(0,0,0,.1);
