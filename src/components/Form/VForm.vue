@@ -440,7 +440,6 @@ export default{
                                             this.character.emeraldNightmare = this.checkProgression(this.character.progression.raids).bosses
                                             this.character.warcraftLogsLink = 'https://www.warcraftlogs.com/rankings/character_name/' + this.character.profile.name + '/Stormscale/EU'
                                           }).then(() => {
-                                            console.log(this.character)
                                             this.isValidMainSpec()
                                             this.isValidOffSpec()
                                             this.show = true
