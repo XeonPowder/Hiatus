@@ -141,7 +141,7 @@
         <table>
           <tr>
             <th style="width: 25%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Boss</th>
-            <th style="width: 50%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">( <span style="color: #5928B2">Heroic</span> | <span style="color: #D216E3">Mythic</span> )</th>
+            <th style="width: 50%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">( <span style="color: #28AAB2">Heroic</span> | <span style="color: #D216E3">Mythic</span> )</th>
             <th style="width: 20%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">Total</th>
           </tr>
           <tr v-for="boss in character.emeraldNightmare">
