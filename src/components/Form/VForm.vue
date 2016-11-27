@@ -1,97 +1,102 @@
 <template>
 <div class="v_form">
-  <holder>
-    <transition name="fade" mode="out-in">
-      <div key="notsubmitted" v-if="!submitted">
-        <transition name="fade" mode="out-in">
-          <div key="invalidName" v-if="!validName">
-          <table>
-            <tr>
-              <th>
-                <span class="name">Name:<span style="color: red;">*</span></span>
-              </th>
-            </tr>
-            <tr>
-              <td>
-                <input :style="nameStyle" @keyup="isValidCharacterName(name)" v-model="name" type="text">
-              </td>
-            </tr>
-          </table>
-          </div>
-          <div key="validName" v-else-if="validName">
-            <table>
-              <tr>
-                <th><span class="name">Name:<span style="color: red;">*</span></span><br></th>
-                <th><span class="name">Main Spec:<span style="color: red;">*</span></span><br></th>
-                <th><span class="name">Off Spec:<span style="color: red;">*</span></span><br></th>
-              </tr>
-              <tr>
-                <td><input :style="nameStyle" @keyup="isValidCharacterName(name)" v-model="name" type="text"></td>
-                <td><input :style="mainSpecStyle" @keyup="isValidMainSpec()" v-model="mainSpec" type="text"></td>
-                <td><input :style="offSpecStyle" @keyup="isValidOffSpec()" v-model="offSpec" type="text"></td>
-              </tr>
-            </table><br>
-            <table>
-              <tr>
-                <th>
-                  <span style="bold;"class="name">Availability (8pm-11pm Server Time):</span>
-                </th>
-              </tr>
-            </table>
-            <div id="tuesday" @click="change('tuesday')">Tuesday</div>
-            <div id="wednesday" @click="change('wednesday')">Wednesday</div>
-            <div id="thursday" @click="change('thursday')">Thursday</div>
-            <div id="sunday" @click="change('sunday')">Sunday</div><br><br>
-            <table>
-              <tr>
-                <th>
-                  <span style="bold;"class="name">Attend Trail Raids (No Loot):</span>
-                </th>
-              </tr>
-            </table>
-            <div key="trail" id="trail" @click="change('trail')">{{trail}}</div>
-            <table>
-              <tr>
-                <th>
-                  <span style="bold;"class="name">Send Character Warcraft Logs:</span>
-                </th>
-              </tr>
-            </table>
-            <div id="warcraft" @click="change('warcraft')">{{warcraft}}</div><br>
-            <div key="useWarcraft" v-if="warcraft === 'Yes'">
-              <input style="width: 75%" v-if="!searching && character.warcraftLogsLink !== undefined" type="text" :value="character.warcraftLogsLink">
-              <div v-else-if="searching" class="sampleContainer">
-                <div class="loader">
-                    <span class="dot dot_1"></span>
-                    <span class="dot dot_2"></span>
-                    <span class="dot dot_3"></span>
-                    <span class="dot dot_4"></span>
+  <transition name="fade" mode="out-in">
+    <div key="notsubmitted" v-if="!submitted">
+      <transition name="fade" mode="out-in">
+        <div key="characterInfo">
+          <holder title="Character Information" subtitle="Stormscale EU">
+            <transition name="fade" mode="out-in">
+              <table key="inVName" v-if="!validName">
+                <tr>
+                  <th>
+                    <span class="name">Character Name:<span style="color: red;">*</span></span>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <input autofocus :style="nameStyle" @keyup="isValidCharacterName(name, $event)" v-model="name" type="text">
+                  </td>
+                </tr>
+              </table>
+              <table key="vName" v-else-if="validName">
+                <tr>
+                  <th>
+                    <span class="name">Character Name:<span style="color: red;">*</span></span>
+                  </th>
+                  <th>
+                    <span class="name">Main Spec:<span style="color: red;">*</span></span><br>
+                  </th>
+                  <th>
+                    <span class="name">Off Spec:<span style="color: red;">*</span></span><br>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <input autofocus :style="nameStyle" @keyup="isValidCharacterName(name, $event)" v-model="name" type="text">
+                  </td>
+                  <td key="validNameMainSpecInput" v-if="validName">
+                    <input autofocus :style="mainSpecStyle" @keyup="isValidMainSpec()" v-model="mainSpec" type="text">
+                  </td>
+                  <td key="validNameOffSpecInput" v-if="validName">
+                    <input :style="offSpecStyle" @keyup="isValidOffSpec()" v-model="offSpec" type="text">
+                  </td>
+                </tr>
+              </table>
+            </transition>
+          </holder>
+          <transition name="fade" mode="out-in">
+            <div key="validName" v-if="validName">
+              <holder title="Availability" subtitle="(8pm-11pm Server Time)" style="margin-top: 20px;">
+                <div id="tuesday" @click="change('tuesday')">Tuesday</div>
+                <div id="wednesday" @click="change('wednesday')">Wednesday</div>
+                <div id="thursday" @click="change('thursday')">Thursday</div>
+                <div id="sunday" @click="change('sunday')">Sunday</div><br><br>
+              </holder>
+              <holder title="Attend Trail Raids" subtitle="Atttending trail raids forces you to be subject to NO LOOT" style="margin-top: 20px;">
+                <div key="trail" id="trail" @click="change('trail')">{{trail}}
                 </div>
-              </div>
-              <input style="width: 75%" v-else type="text">
+              </holder>
+              <holder title="Warcraft Logs" subtitle="WarcraftLogs Link" style="margin-top: 20px;">
+                <div id="warcraft" @click="change('warcraft')">{{warcraft}}</div><br>
+                <transition name="fade" mode="out-in">
+                  <div key="useWarcraft" v-if="warcraft === 'Yes'">
+                    <transition name="fade" mode="out-in">
+                      <input key="warcraftLogsLinkFound" v-if="!searching && character.warcraftLogsLink !== undefined" style="width: 75%" type="text" :value="character.warcraftLogsLink">
+                      <div key="warcraftLogsLinkSearching" v-else-if="searching" class="loader">
+                          <span class="dot dot_1"></span>
+                          <span class="dot dot_2"></span>
+                          <span class="dot dot_3"></span>
+                          <span class="dot dot_4"></span>
+                      </div>
+                      <input key="warcraftLogsLinkNotFound" v-else type="text" style="width: 75%">
+                    </transition>
+                  </div>
+                </transition>
+              </holder>
+              <holder title="Additional Information" subtitle="Any information you would like to let us know?" style="margin-top: 20px;">
+                <div id="additional" @click="change('additional')">{{additional}}</div><br>
+                <transition name="fade" mode="out-in">
+                  <textarea key="useAdditional" v-if="additional === 'Yes'"></textarea>
+                </transition>
+              </holder>
+              <holder style="margin-top: 20px;">
+                <div key="allValid" v-if="validMainSpec && validOffSpec">
+                  <button @click="submitForm" class="v_form_submit">Submit</button>
+                </div>
+              </holder>
             </div>
-            <table>
-              <tr>
-                <th>
-                  <span style="bold;"class="name">Send Additional Information:</span>
-                </th>
-              </tr>
-            </table>
-            <div id="additional" @click="change('additional')">{{additional}}</div><br>
-            <textarea key="useAdditional" v-if="additional === 'Yes'"></textarea><br>
-            <div key="allValid" v-if="validMainSpec && validOffSpec">
-              <button  @click="submitForm" class="v_form_submit">Submit</button>
-            </div>
-          </div>  
-        </transition>
-      </div>
-      <div key="submitted" v-else-if="submitted">
+          </transition>
+        </div>
+      </transition>
+    </div>
+    <div key="submitted" v-else-if="submitted">
+      <holder>
         <h2 id="submitted">Application Sent!</h2>
         <button @click="submitted = false" class="v_form_submit">Return</button>
-      </div>
-    </transition>
-  </holder>
-  <transition name="fade">
+      </holder>
+    </div>
+  </transition>
+  <transition name="fade" mode="out-in">
     <holder key="showcharacter" v-if="show && character !== undefined && character.profile !== undefined" style="margin-top: 20px;">
       <div>
         <h3>
@@ -121,20 +126,32 @@
         </h3>
       </div>
       <div>
-        <h3> 
-          <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped === undefined">
-            Avg iLvL: [<span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>]
-          </span>
-          <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped !== undefined">
-            iLvL / Equipped: [<span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>/
-            <span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>]
-          </span>
-          <span v-if="character.items.averageItemLevel === undefined && character.items.averageItemLevelEquipped !== undefined">
-            [<span style="color: #AA9D33"> Avg iLvL Equipped: {{character.items.averageItemLevelEquipped}} </span>]
+        <h3>
+          <span v-if="character.profile.level !== undefined">
+            <span v-if="character.profile.level !== 110">
+              Level [<span style="color: #C64F79"> {{character.profile.level}} </span> / <span style="color: #FF005A"> 110 </span>]
+            </span>
+            <span v-else-if="character.profile.level === 110">
+              Level [<span style="color: #C64F79"> {{character.profile.level}} </span>]
+            </span>
           </span>
         </h3>
       </div>
-      <div v-if="character.progression !== undefined">
+      <div>
+        <h3>
+          <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped === undefined">
+            Item Level [<span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>]
+          </span>
+          <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped !== undefined">
+            Item Level [<span style="color: #30C14B"> Max </span>/ <span style="color: #AA9D33">Equipped</span> ] : [<span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>/
+            <span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>]
+          </span>
+          <span v-if="character.items.averageItemLevel === undefined && character.items.averageItemLevelEquipped !== undefined">
+            Item Level [<span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>]
+          </span>
+        </h3>
+      </div>
+      <div v-if="character.profile.level === 110 && character.emeraldNightmare !== undefined">
         <h3>
           Raid Progression:
         </h3>
@@ -152,17 +169,18 @@
         </table>
       </div><br>
     </holder>
-    <holder key="showerror" v-else-if="error" style="margin-top: 20px;">
-      <p style="color: red">Character not found.</p><br>
+    <holder key="showerror" v-else-if="!searching && !invalidNameRegex && !validName && name.length > 1" style="margin-top: 20px;">
+      <h1 style="color: red"><span style="position: relative; top: 15px;">Character not found.</span></h1><br>
+    </holder>
+    <holder key="showerror" v-else-if="!searching && !validName && invalidNameRegex" style="margin-top: 20px;">
+      <h1 style="color: red"><span style="position: relative; top: 15px;">Invalid Characters Entered.</span></h1><br>
     </holder>
     <holder key="searching" v-else-if="searching" style="margin-top: 20px;">
-      <div style="margin: 0 auto;" class="sampleContainer">
-        <div class="loader">
-            <span class="dot dot_1"></span>
-            <span class="dot dot_2"></span>
-            <span class="dot dot_3"></span>
-            <span class="dot dot_4"></span>
-        </div>
+      <div class="loader">
+        <span class="dot dot_1"></span>
+        <span class="dot dot_2"></span>
+        <span class="dot dot_3"></span>
+        <span class="dot dot_4"></span>
       </div><br>
     </holder>
   </transition>
@@ -180,6 +198,7 @@ export default{
     return {
       character: {},
       name: '',
+      invalidNameRegex: false,
       validName: false,
       validNameTimeout: null,
       mainSpec: '',
@@ -289,7 +308,39 @@ export default{
         }
       }
     },
-    isValidCharacterName (name) {
+    isValidCharacterName (name, e) {
+      let regex = new RegExp('(\\d)|([^a-zA-Z]+)')
+      if (this.character !== undefined && this.character.profile !== undefined && this.character.profile.name === name) {
+        clearTimeout(this.validNameTimeout)
+        this.show = true
+        this.validName = true
+        this.invalidNameRegex = false
+        this.searching = false
+        return
+      }
+      if (name.length < 2) {
+        return
+      }
+      if (name.length < 2 && this.character !== undefined && this.character.profile === undefined) {
+        this.validName = false
+        this.searching = false
+        this.invalidNameRegex = false
+        this.show = false
+        clearTimeout(this.validNameTimeout)
+        return
+      }
+      if (regex.test(name)) {
+        this.invalidNameRegex = true
+        this.validName = false
+        this.searching = false
+        this.show = false
+        clearTimeout(this.validNameTimeout)
+        return
+      } else {
+        this.invalidNameRegex = false
+        clearTimeout(this.validNameTimeout)
+      }
+      this.searching = true
       let fields = ''
       let http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
       let this2 = this
@@ -304,9 +355,10 @@ export default{
             this2.searchForCharacter(name)
           } else {
             this2.show = false
+            this2.searching = false
           }
         })
-      }, 1000)
+      }, 2000)
     },
     submitForm () {
       this.character = {}
@@ -476,6 +528,7 @@ export default{
 
 .loader {
   position: relative;
+  top: 15px;
   width: 44px;
   height: 8px;
   margin: 12px auto;
@@ -493,24 +546,27 @@ export default{
 .dot_1 {
   animation: animateDot1 1.5s linear infinite;
   left: 12px;
-  background: #3088E2;
+  background: #E2B630;
 }
 
 .dot_2 {
   animation: animateDot2 1.5s linear infinite;
   animation-delay: 0.5s;
   left: 24px;
+  background: #3084E2;
 }
 
 .dot_3 {
   animation: animateDot3 1.5s linear infinite;
   left: 12px;
+  background: #E2B630;
 }
 
 .dot_4 {
   animation: animateDot4 1.5s linear infinite;
   animation-delay: 0.5s;
   left: 24px;
+  background: #3084E2;
 }
 
 @keyframes animateDot1 {
@@ -582,9 +638,11 @@ export default{
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently not supported by any browser */
   cursor: pointer;
+  transition: background-color .5s
 }
 #tuesday:hover, #wednesday:hover, #thursday:hover, #sunday:hover, #warcraft:hover, #additional:hover, #trail:hover {
   border: 1px solid #060606;
+  padding: 9px 9px;
 }
 table, th, td {
   margin: auto;

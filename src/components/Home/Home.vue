@@ -1,14 +1,12 @@
 <template>
   <div class="homepage">
-  <transition name="fade" mode="out-in">
-    <div :key="location">
-      <holder :title="title" :subtitle="subtitle">
-      </holder>
-      <div v-if="location === 'apply'">
-        <v-form></v-form>
+    <transition name="fade" mode="out-in">
+      <div :key="location">
+        <holder v-if="location !== 'apply'" :title="title" :subtitle="subtitle">
+        </holder>
+        <v-form v-else-if="location === 'apply'"></v-form>
       </div>
-    </div>
-  </transition>
+    </transition>
   </div>
 </template>
 
