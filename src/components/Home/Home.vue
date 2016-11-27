@@ -3,10 +3,10 @@
   <transition name="fade" mode="out-in">
     <div :key="location">
       <holder :title="title" :subtitle="subtitle">
-        <div v-if="location === 'apply'">
-          <v-form></v-form>
-        </div>
       </holder>
+      <div v-if="location === 'apply'">
+        <v-form></v-form>
+      </div>
     </div>
   </transition>
   </div>

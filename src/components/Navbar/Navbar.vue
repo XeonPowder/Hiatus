@@ -112,6 +112,12 @@ li {
   float: left;
   color: #bc9536;
   border-bottom: 0px solid #aaa;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently not supported by any browser */
 }
 li:hover:not(.header) {
   cursor: pointer;
@@ -119,11 +125,10 @@ li:hover:not(.header) {
 .header {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Chrome/Safari/Opera */
-   -khtml-user-select: none; /* Konqueror */
-     -moz-user-select: none; /* Firefox */
-      -ms-user-select: none; /* Internet Explorer/Edge */
-          user-select: none; /* Non-prefixed version, currently
-                                not supported by any browser */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently not supported by any browser */
 }
 .header:hover {
   cursor: default;
@@ -133,7 +138,7 @@ li:hover:not(.active):not(.header) {
   transition: border-bottom 1s;
 }
 .active {
-  border-bottom: 1px solid #061a26;
+  border-bottom: 1px solid #ff8000;
   transition: border-bottom 1s;
 }
 
@@ -141,42 +146,24 @@ li:hover:not(.active):not(.header) {
   position: fixed;
   top: 10px;
   margin: 0px -62.5px;
-  -webkit-animation-name: spin;
-  -webkit-animation-duration: 8000ms;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;
-  -moz-animation-name: spin;
-  -moz-animation-duration: 8000ms;
-  -moz-animation-iteration-count: infinite;
-  -moz-animation-timing-function: linear;
-  -ms-animation-name: spin;
-  -ms-animation-duration: 8000ms;
-  -ms-animation-iteration-count: infinite;
-  -ms-animation-timing-function: linear;
-  
-  animation-name: spin;
-  animation-duration: 8000ms;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  -webkit-transition: -webkit-transform 16s ease-in-out;
+  -moz-transition:    -moz-transform 16s ease-in-out;
+  -ms-transition:     -ms-transform 16s ease-in-out;
+  -o-transition:      -o-transform 16s ease-in-out;
+  transition:         transform 16s ease-in-out;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently not supported by any browser */
+
 }
-@-ms-keyframes spin {
-    from { -ms-transform: rotate(0deg); }
-    to { -ms-transform: rotate(360deg); }
-}
-@-moz-keyframes spin {
-    from { -moz-transform: rotate(0deg); }
-    to { -moz-transform: rotate(360deg); }
-}
-@-webkit-keyframes spin {
-    from { -webkit-transform: rotate(0deg); }
-    to { -webkit-transform: rotate(360deg); }
-}
-@keyframes spin {
-    from {
-        transform:rotate(0deg);
-    }
-    to {
-        transform:rotate(360deg);
-    }
+#sanctity_icon:hover {
+  -webkit-transform: rotate(2880deg);
+  -moz-transform:    rotate(2880deg);
+  -ms-transform:     rotate(2880deg);
+  -o-transform:      rotate(2880deg);
+  transform:         rotate(2880deg);
 }
 </style>
