@@ -134,7 +134,6 @@ const className = (characterClass) => {
 }
 const validSpec = (c, spec) => {
   let cName = className(c)
-  console.log(cName)
   spec = spec.toLowerCase()
   switch (cName) {
     case 'Warrior':

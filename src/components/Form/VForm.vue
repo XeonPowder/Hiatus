@@ -93,7 +93,7 @@
   </holder>
   <transition name="fade">
     <holder key="showcharacter" v-if="show && character !== undefined && character.profile !== undefined" style="margin-top: 20px;">
-      <div >
+      <div>
         <h3>
           <span v-if="character.profile.name !== undefined">
             <span :style="{color: getClassColor(character.profile.class)}">{{character.profile.name}}</span>
@@ -120,6 +120,20 @@
           </span>
         </h3>
       </div>
+      <div>
+        <h3> 
+          <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped === undefined">
+            Avg iLvL: [<span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>]
+          </span>
+          <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped !== undefined">
+            iLvL / Equipped: [<span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>/
+            <span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>]
+          </span>
+          <span v-if="character.items.averageItemLevel === undefined && character.items.averageItemLevelEquipped !== undefined">
+            [<span style="color: #AA9D33"> Avg iLvL Equipped: {{character.items.averageItemLevelEquipped}} </span>]
+          </span>
+        </h3>
+      </div>
       <div v-if="character.progression !== undefined">
         <h3>
           Raid Progression:
@@ -142,7 +156,7 @@
       <p style="color: red">Character not found.</p><br>
     </holder>
     <holder key="searching" v-else-if="searching" style="margin-top: 20px;">
-      <div class="sampleContainer">
+      <div style="margin: 0 auto;" class="sampleContainer">
         <div class="loader">
             <span class="dot dot_1"></span>
             <span class="dot dot_2"></span>
@@ -422,11 +436,11 @@ export default{
                                           http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
                                           this.$http.get(http).then((response) => {
                                             this.character.talents = response.body.talents
-                                            console.log('end')
                                           }).then(() => {
                                             this.character.emeraldNightmare = this.checkProgression(this.character.progression.raids).bosses
                                             this.character.warcraftLogsLink = 'https://www.warcraftlogs.com/rankings/character_name/' + this.character.profile.name + '/Stormscale/EU'
                                           }).then(() => {
+                                            console.log(this.character)
                                             this.isValidMainSpec()
                                             this.isValidOffSpec()
                                             this.show = true
