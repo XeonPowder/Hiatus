@@ -132,6 +132,18 @@ const className = (characterClass) => {
       return 'Unknown'
   }
 }
+const guildRank = (r) => {
+  switch (r) {
+    case 0:
+      return 'Guild Master'
+    case 1:
+      return 'Officer'
+    case 2:
+      return 'Raider'
+    default:
+      return 'Member'
+  }
+}
 const validSpec = (c, spec) => {
   let cName = className(c)
   spec = spec.toLowerCase()
@@ -169,7 +181,8 @@ let resource = {
   genderColor,
   classColor,
   className,
-  validSpec
+  validSpec,
+  guildRank
 }
 
 export default resource

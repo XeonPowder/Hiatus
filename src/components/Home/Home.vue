@@ -2,8 +2,9 @@
   <div class="homepage">
     <transition name="fade" mode="out-in">
       <div :key="location">
-        <holder v-if="location !== 'apply'" :title="title" :subtitle="subtitle">
+        <holder v-if="location !== 'apply' && location !== 'about'" :title="title" :subtitle="subtitle">
         </holder>
+        <info v-else-if="location === 'about'"></info>
         <v-form v-else-if="location === 'apply'"></v-form>
       </div>
     </transition>
@@ -13,11 +14,13 @@
 <script>
 import Holder from '../Holder/Holder'
 import VForm from '../Form/VForm'
+import Info from '../Guild/Info'
 export default {
   name: 'homepage',
   components: {
     Holder,
-    VForm
+    VForm,
+    Info
   },
   computed: {
     location () {

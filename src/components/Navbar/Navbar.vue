@@ -4,7 +4,7 @@
     <img id="sanctity_icon" src="../../assets/sanctity_icon.png">
     <div class="navheader">
       <ul>
-        <li :class="{active: !isForum()}" @click="moveTo('sanctity')">Sanctity</li>
+        <li :class="{active: !isForum()}" @click="moveTo('sanctity')">{{title}}</li>
         <li class="header">|</li>
         <li :class="{active: isForum()}" @click="moveTo('forum')">Forum</li>
       </ul>
@@ -26,6 +26,7 @@
 
 <script>
 export default {
+  props: ['title'],
   name: 'navbar',
   data () {
     return {

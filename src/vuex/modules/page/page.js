@@ -7,7 +7,7 @@ const state = {
     location: 'home',
     validLocations: ['home', 'about', 'timeline', 'roster', 'apply'],
     title: {
-      home: 'Sanctity',
+      home: 'Hiatus',
       about: 'About',
       timeline: 'Timeline',
       roster: 'Roster',
@@ -16,7 +16,7 @@ const state = {
     },
     subtitle: {
       home: 'Welcome to the Ultimate.',
-      about: 'At Sanctity we strive...',
+      about: 'At Hiatus we strive...',
       timeline: 'On x we did y',
       roster: 'Raiders....',
       apply: 'Do you have what it takes?',

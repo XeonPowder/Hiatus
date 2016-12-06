@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <navbar></navbar>
+    <navbar title="Hiatus"></navbar>
     <transition name="fade" mode="out-in">
       <home v-if="page === 'home'"></home>
       <forum v-else-if="page === 'forum'"></forum>
@@ -29,7 +29,6 @@ export default {
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Farsan');
-
 body{
   background-color: #222222;
 }

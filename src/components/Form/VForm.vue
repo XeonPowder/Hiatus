@@ -4,7 +4,7 @@
     <div key="notsubmitted" v-if="!submitted">
       <transition name="fade" mode="out-in">
         <div key="characterInfo">
-          <holder title="Character Information" subtitle="Stormscale EU">
+          <holder title="Character Information" subtitle="Ravencrest EU">
             <transition name="fade" mode="out-in">
               <table key="inVName" v-if="!validName">
                 <tr>
@@ -52,8 +52,8 @@
                 <div id="thursday" @click="change('thursday')">Thursday</div>
                 <div id="sunday" @click="change('sunday')">Sunday</div><br><br>
               </holder>
-              <holder title="Attend Trail Raids" subtitle="Atttending trail raids forces you to be subject to NO LOOT" style="margin-top: 20px;">
-                <div key="trail" id="trail" @click="change('trail')">{{trail}}
+              <holder title="Attend Trial Raids" subtitle="Atttending trial raids forces you to be subject to NO LOOT" style="margin-top: 20px;">
+                <div key="trial" id="trial" @click="change('trial')">{{trial}}
                 </div>
               </holder>
               <holder title="Warcraft Logs" subtitle="WarcraftLogs Link" style="margin-top: 20px;">
@@ -213,7 +213,7 @@ export default{
       searching: false,
       additional: 'No',
       warcraft: 'No',
-      trail: 'No'
+      trial: 'No'
     }
   },
   name: 'v-form',
@@ -318,10 +318,7 @@ export default{
         this.searching = false
         return
       }
-      if (name.length < 2) {
-        return
-      }
-      if (name.length < 2 && this.character !== undefined && this.character.profile === undefined) {
+      if (name.length < 2 || (name.length < 2 && (this.character !== undefined && this.character.profile === undefined))) {
         this.validName = false
         this.searching = false
         this.invalidNameRegex = false
@@ -342,7 +339,7 @@ export default{
       }
       this.searching = true
       let fields = ''
-      let http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+      let http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
       let this2 = this
       clearTimeout(this.validNameTimeout)
       this.validNameTimeout = setTimeout(() => {
@@ -360,18 +357,28 @@ export default{
         })
       }, 2000)
     },
-    submitForm () {
+    resetData () {
       this.character = {}
       this.name = ''
-      this.mainSpec = ''
-      this.offSpec = ''
+      this.invalidNameRegex = false
       this.validName = false
+      this.validNameTimeout = null
+      this.mainSpec = ''
       this.validMainSpec = false
+      this.validMainSpecTimeout = null
+      this.offSpec = ''
       this.validOffSpec = false
+      this.validOffSpecTimeout = null
+      this.submitted = false
       this.show = false
       this.error = false
       this.searching = false
-      this.submitted = true
+      this.additional = 'No'
+      this.warcraft = 'No'
+      this.trial = 'No'
+    },
+    submitForm () {
+      this.resetData()
     },
     change (x) {
       if (document.getElementById(x).style.backgroundColor === '' || document.getElementById(x).style.backgroundColor === 'rgb(208, 62, 62)') {
@@ -379,8 +386,8 @@ export default{
           this.additional = 'Yes'
         } else if (x === 'warcraft') {
           this.warcraft = 'Yes'
-        } else if (x === 'trail') {
-          this.trail = 'Yes'
+        } else if (x === 'trial') {
+          this.trial = 'Yes'
         }
         document.getElementById(x).style.backgroundColor = 'rgb(70, 193, 90)'
       } else if (document.getElementById(x).style.backgroundColor === 'rgb(70, 193, 90)') {
@@ -388,8 +395,8 @@ export default{
           this.additional = 'No'
         } else if (x === 'warcraft') {
           this.warcraft = 'No'
-        } else if (x === 'trail') {
-          this.trail = 'No'
+        } else if (x === 'trial') {
+          this.trial = 'No'
         }
         document.getElementById(x).style.backgroundColor = 'rgb(208, 62, 62)'
       }
@@ -424,10 +431,10 @@ export default{
       this.error = false
       this.show = false
       let fields = ''
-      let http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+      let http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
       this.$http.get(http).then((response) => {
         this.character.profile = response.body
-        this.character.armoryLink = 'https://eu.battle.net/wow/en/character/stormscale/' + name + '/advanced'
+        this.character.armoryLink = 'https://eu.battle.net/wow/en/character/Ravencrest/' + name + '/advanced'
       }, (response) => {
         this.character = {error: 'no character found.'}
         this.error = true
@@ -437,60 +444,60 @@ export default{
       }).then(() => {
         if (this.character.profile !== undefined) {
           fields = 'fields=achievements&'
-          http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+          http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
           this.$http.get(http).then((response) => {
             this.character.achievements = response.body.achievements
           }).then(() => {
             if (this.character.profile !== undefined) {
               fields = 'fields=appearance&'
-              http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+              http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
               this.$http.get(http).then((response) => {
                 this.character.appearance = response.body.appearance
               }).then(() => {
                 if (this.character.profile !== undefined) {
                   fields = 'fields=feed&'
-                  http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+                  http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
                   this.$http.get(http).then((response) => {
                     this.character.feed = response.body.feed
                   }).then(() => {
                     if (this.character.profile !== undefined) {
                       fields = 'fields=guild&'
-                      http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+                      http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
                       this.$http.get(http).then((response) => {
                         this.character.guild = response.body.guild
                       }).then(() => {
                         if (this.character.profile !== undefined) {
                           fields = 'fields=items&'
-                          http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+                          http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
                           this.$http.get(http).then((response) => {
                             this.character.items = response.body.items
                           }).then(() => {
                             if (this.character.profile !== undefined) {
                               fields = 'fields=progression&'
-                              http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+                              http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
                               this.$http.get(http).then((response) => {
                                 this.character.progression = response.body.progression
                               }).then(() => {
                                 if (this.character.profile !== undefined) {
                                   fields = 'fields=statistics&'
-                                  http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+                                  http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
                                   this.$http.get(http).then((response) => {
                                     this.character.statistics = response.body.statistics
                                   }).then(() => {
                                     if (this.character.profile !== undefined) {
                                       fields = 'fields=stats&'
-                                      http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+                                      http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
                                       this.$http.get(http).then((response) => {
                                         this.character.stats = response.body.stats
                                       }).then(() => {
                                         if (this.character.profile !== undefined) {
                                           fields = 'fields=talents&'
-                                          http = 'https://eu.api.battle.net/wow/character/Stormscale/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+                                          http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
                                           this.$http.get(http).then((response) => {
                                             this.character.talents = response.body.talents
                                           }).then(() => {
                                             this.character.emeraldNightmare = this.checkProgression(this.character.progression.raids).bosses
-                                            this.character.warcraftLogsLink = 'https://www.warcraftlogs.com/rankings/character_name/' + this.character.profile.name + '/Stormscale/EU'
+                                            this.character.warcraftLogsLink = 'https://www.warcraftlogs.com/rankings/character_name/' + this.character.profile.name + '/Ravencrest/EU'
                                           }).then(() => {
                                             this.isValidMainSpec()
                                             this.isValidOffSpec()
@@ -521,7 +528,8 @@ export default{
   }
 }
 </script>
-<style>
+
+<style scoped>
 .name {
   font-size: larger;
 }
@@ -625,7 +633,7 @@ export default{
     transform: rotate(-360deg) translateX(12px);
   }
 }
-#tuesday, #wednesday, #thursday, #sunday, #warcraft, #additional, #trail {
+#tuesday, #wednesday, #thursday, #sunday, #warcraft, #additional, #trial {
   display: inline-block;
   width: 75px;
   padding: 10px 10px;
@@ -640,7 +648,7 @@ export default{
   cursor: pointer;
   transition: background-color .5s
 }
-#tuesday:hover, #wednesday:hover, #thursday:hover, #sunday:hover, #warcraft:hover, #additional:hover, #trail:hover {
+#tuesday:hover, #wednesday:hover, #thursday:hover, #sunday:hover, #warcraft:hover, #additional:hover, #trial:hover {
   border: 1px solid #060606;
   padding: 9px 9px;
 }
