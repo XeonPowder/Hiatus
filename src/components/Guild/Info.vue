@@ -104,10 +104,60 @@ table, th, td {
     transform: rotate(-360deg) translateX(12px);
   }
 }
+input {
+  font-size: large;
+  font-family: 'Farsan';
+  background-color: #E6E6E6;
+}
+input[type=text], input[type=number] {
+  text-align: center;
+  border: none;
+  width: 100%;
+  padding: 5px 5px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid #ff8000;
+}
+input[type=text]:focus, input[type=number]:focus, select:focus {
+  outline: none;
+  border-bottom: 2px solid #ff8000;
+}
+.v_form_submit {
+  background-color: #ff9000;
+  border: none;
+  color: black;
+  padding: 8px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  font-family: 'Farsan';
+  font-size: large;
+}
+.v_form_submit:focus {
+  outline: 1px solid #000000;
+}
+.v_form_submit:active {
+  outline: 1px solid #0f0f0f;
+}
 </style>
 
 <template>
   <transition-group name="fade" mode="out-in">
+    <holder style="position: relative;" key="input" v-if="customLookup">
+      <i title="Close" @click="customLookup = !customLookup" style="cursor: pointer; position: absolute; left: 5px; top: 5px;" class="fa fa-window-close-o" aria-hidden="true"></i>
+      <table>
+        <tr>
+          <th>Guild</th>
+          <th>Realm</th>
+        </tr>
+        <tr>
+          <td><input @keyup.enter="load" v-model="lookup.name" type="text"></input></td>
+          <td><input @keyup.enter="load" v-model="lookup.realm" type="text"></input></td>
+        </tr>
+      </table>
+      <button @click="reset" class="v_form_submit">Reset</button>
+      <button @click="load" class="v_form_submit">Search</button>
+    </holder>
     <holder v-if="loading" key="loading" style="height: 38px; width: 100px">
       <transition name="fade" mode="out-in">
         <div class="loader">
@@ -119,59 +169,67 @@ table, th, td {
       </transition>
     </holder>
     <holder style="position: relative;" v-else-if="error" key="error">
-      <i @click="$store.dispatch('change', ['location', 'home'])" style="cursor: pointer; position: absolute; left: 10px; top: 13px;" class="fa fa-arrow-left" aria-hidden="true"></i>
+      <transition name="fade" mode="out-in">
+        <i title="Custom Guild Lookup" v-if="!customLookup" @click="customLookup = !customLookup" style="cursor: pointer; position: absolute; left: 30px; top: 15px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>
+      </transition>
+      <i title="Home" @click="$store.dispatch('change', ['location', 'home'])" style="cursor: pointer; position: absolute; left: 10px; top: 13px;" class="fa fa-arrow-left" aria-hidden="true"></i>
       <h1 style="color: red">There was an error retrieving data!</h2>
     </holder>
-    <holder v-else-if="!error && !loading" style="position: relative;" title="General Information" key="general">
-      <transition name="fade" mode="out-in">
-        <i v-if="!isToggled('general')" class="fa fa-window-maximize" aria-hidden="true" style="position: absolute; top: 5px; left: 5px;" @click="toggle('general')"></i>
-        <i v-else-if="isToggled('general')" class="fa fa-window-minimize" aria-hidden="true" style="position: absolute; top: 5px; left: 5px;" @click="toggle('general')"></i>
-      </transition>
-      <transition name="fade" mode="out-in">
-        <div v-if="isToggled('general')">
-          <span v-if="guild.name !== undefined && guild.realm !== undefined">
-            <h3>Guild:</h3>
-              <h2>{{guild.name}} - {{guild.realm}}</h2>
-          </span>
-          <span v-if="guild.level !== undefined">
-            <h3>Level:</h3>
-              <h2>{{guild.level}}</h2>
-          </span>
-          <span v-if="guild.achievementPoints !== undefined">
-            <h3>Achievement Points</h3>
-              <h2>{{guild.achievementPoints}}</h2>
-          </span>
-        </div>
-      </transition>
-    </holder>
-    <holder v-else-if="!error && !loading" style="position: relative;" title="Roster" key="roster">
-      <transition name="fade" mode="out-in">
-        <i v-if="!isToggled('roster')" class="fa fa-window-maximize" aria-hidden="true" style="position: absolute; top: 5px; left: 5px;" @click="toggle('roster')"></i>
-        <i v-else-if="isToggled('roster')" class="fa fa-window-minimize" aria-hidden="true" style="position: absolute; top: 5px; left: 5px;" @click="toggle('roster')"></i>
-      </transition>
-      <transition name="fade" mode="out-in">
-        <table v-if="guild.members !== undefined && isToggled('roster')" class="table">
-          <tr>
-            <th style="cursor: pointer;" @click="sortBy('cName')">Character Name</th>
-            <th style="cursor: pointer;" @click="sortBy('cClass')">Character Class</th>
-            <th style="cursor: pointer;" @click="sortBy('cRace')">Character Race</th>
-            <th style="cursor: pointer;" @click="sortBy('cLevel')">Level</th>
-            <th style="cursor: pointer;" @click="sortBy('cAchievementPoints')">Achievement Points</th>
-            <th style="cursor: pointer;" @click="sortBy('cGuildRank')">Guild Rank</th>
-            <th style="cursor: pointer;" @click="sortBy('cBattlegroup')">Battlegroup</th>
-          </tr>
-          <tr v-for="member in sortedDB">
-            <td :style="{color: getClassColor(member.character.class)}">{{member.character.name}}</td>
-            <td :style="{color: getClassColor(member.character.class)}">{{getClassName(member.character.class)}}</td>
-            <td :style="{color: getRaceColor(member.character.race)}">{{getRaceName(member.character.race)}}</td>
-            <td>{{member.character.level}}</td>
-            <td>{{member.character.achievementPoints}}</td>
-            <td>{{getGuildRank(member.rank)}}</td>
-            <td>{{member.character.battlegroup}}</td>
-          </tr>
-        </table>
-      </transition>
-    </holder>
+    <div v-else-if="!error && !loading" key="data">
+      <holder style="position: relative;" title="General Information" key="general">
+        <transition name="fade" mode="out-in">
+          <i title="Custom Guild Lookup" v-if="!customLookup" @click="customLookup = !customLookup" style="cursor: pointer; position: absolute; left: 30px; top: 6px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        </transition>
+        <transition name="fade" mode="out-in">
+          <i title="Maximize" key="maximize" v-if="!isToggled('general')" class="fa fa-window-maximize" aria-hidden="true" style="cursor: pointer; position: absolute; top: 5px; left: 5px;" @click="toggle('general')"></i>
+          <i title="Minimize" key="minimize" v-else-if="isToggled('general')" class="fa fa-window-minimize" aria-hidden="true" style="cursor: pointer; position: absolute; top: 5px; left: 5px;" @click="toggle('general')"></i>
+        </transition>
+        <transition name="fade" mode="out-in">
+          <div v-if="isToggled('general')">
+            <span v-if="guild.name !== undefined && guild.realm !== undefined">
+              <h3>Guild:</h3>
+                <h2>{{guild.name}} - {{guild.realm}}</h2>
+            </span>
+            <span v-if="guild.level !== undefined">
+              <h3>Level:</h3>
+                <h2>{{guild.level}}</h2>
+            </span>
+            <span v-if="guild.achievementPoints !== undefined">
+              <h3>Achievement Points</h3>
+                <h2>{{guild.achievementPoints}}</h2>
+            </span>
+          </div>
+        </transition>
+      </holder>
+      <holder style="position: relative;" title="Roster" key="roster">
+        <transition name="fade" mode="out-in">
+          <i title="Maximize" key="maximize2" v-if="!isToggled('roster')" class="fa fa-window-maximize" aria-hidden="true" style="cursor: pointer; position: absolute; top: 5px; left: 5px;" @click="toggle('roster')"></i>
+          <i title="Minimize" key="minimize2" v-else-if="isToggled('roster')" class="fa fa-window-minimize" aria-hidden="true" style="cursor: pointer; position: absolute; top: 5px; left: 5px;" @click="toggle('roster')"></i>
+        </transition>
+        <transition name="fade" mode="out-in">
+          <table style="border-bottom: 1px solid #000;" v-if="isToggled('roster')" class="table">
+            <tr>
+              <th style="cursor: pointer;" @click="sortBy('cName')">Character Name</th>
+              <th style="cursor: pointer;" @click="sortBy('cClass')">Character Class</th>
+              <th style="cursor: pointer;" @click="sortBy('cRace')">Character Race</th>
+              <th style="cursor: pointer;" @click="sortBy('cLevel')">Level</th>
+              <th style="cursor: pointer;" @click="sortBy('cAchievementPoints')">Achievement Points</th>
+              <th style="cursor: pointer;" @click="sortBy('cGuildRank')">Guild Rank</th>
+              <th style="cursor: pointer;" @click="sortBy('cBattlegroup')">Battlegroup</th>
+            </tr>
+            <tr v-for="member in sortedDB">
+              <td :style="{color: getClassColor(member.character.class)}">{{member.character.name}}</td>
+              <td :style="{color: getClassColor(member.character.class)}">{{getClassName(member.character.class)}}</td>
+              <td :style="{color: getRaceColor(member.character.race)}">{{getRaceName(member.character.race)}}</td>
+              <td>{{member.character.level}}</td>
+              <td>{{member.character.achievementPoints}}</td>
+              <td>{{getGuildRank(member.rank)}}</td>
+              <td>{{member.character.battlegroup}}</td>
+            </tr>
+          </table>
+        </transition>
+      </holder>
+    </div>
   </transition-group>
 </template>
 
@@ -185,6 +243,8 @@ export default {
   name: 'info',
   data () {
     return {
+      customLookup: false,
+      lookup: {realm: 'Ravencrest', name: 'Hiatus'},
       guild: {},
       error: false,
       show: false,
@@ -314,10 +374,17 @@ export default {
         console.warn('invalid toggle')
       }
     },
+    reset () {
+      this.lookup.realm = 'Ravencrest'
+      this.lookup.name = 'Hiatus'
+    },
     load () {
+      if (this.guild.name === this.lookup.name && this.guild.realm === this.lookup.realm) {
+        return
+      }
       this.loading = true
       let fields = 'members'
-      let http = 'https://eu.api.battle.net/wow/guild/Ravencrest/Hiatus?fields=' + fields + '&locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+      let http = 'https://eu.api.battle.net/wow/guild/' + this.lookup.realm + '/' + this.lookup.name + '?fields=' + fields + '&locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
       this.$http.get(http).then((response) => {
         this.guild.name = response.body.name
         this.guild.realm = response.body.realm
