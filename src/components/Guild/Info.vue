@@ -144,6 +144,31 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
  background-color: #2E2E2E !important;
  cursor: pointer;
 }
+select::-ms-expand {
+    display: none;
+}
+#regionSelector {
+  font-family: 'Farsan';
+  font-size: 16px;
+  -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+  text-indent: 15px;
+  text-overflow: '';
+  -webkit-padding-end: 20px;
+  -webkit-padding-start: 2px;
+  -webkit-user-select: none;
+  padding-top: 14px;
+  background-color: #E6E6E6;
+  border: 0px;
+  border-bottom: 1px solid #ff8000;
+  width: 100%;
+  text-align-last: center;
+  outline: 0px;
+}
+#regionSelector:focus {
+  border-bottom: 2px solid #ff8000;
+}
 </style>
 
 <template>
@@ -152,10 +177,19 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
       <i title="Close" @click="customLookup = !customLookup" style="cursor: pointer; position: absolute; left: 5px; top: 5px;" class="fa fa-window-close-o" aria-hidden="true"></i>
       <table class="table">
         <tr>
-          <th>Guild</th>
-          <th>Realm</th>
+          <th style="width: 33%;">Region</th>
+          <th style="width: 33%;">Guild</th>
+          <th style="width: 33%;">Realm</th>
         </tr>
         <tr>
+          <td>
+            <select id="regionSelector" v-model="lookup.region">
+              <option value="EU">EU</option>
+              <option value="KR">KR</option>
+              <option value="TW">TW</option>
+              <option value="US">US</option>
+            </select>
+          </td>
           <td><input @keyup.enter="load" v-model="lookup.name" type="text"></input></td>
           <td><input @keyup.enter="load" v-model="lookup.realm" type="text"></input></td>
         </tr>
@@ -230,7 +264,7 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
                 <th style="width: 14.2857142857%; border-right: 1px solid #000; cursor: pointer;" @click="sortBy('cGuildRank')">Guild Rank</th>
                 <th style="width: 14.2857142857%; cursor: pointer;" @click="sortBy('cBattlegroup')">Battlegroup</th>
               </tr>
-              <tr v-for="member in sortedDB" id="characterRosterItem" style="background-color: #232323; color: #B1B1B1; border-bottom: 1px solid #000;"  @click="openArmoryWindow(member.character.realm, member.character.name)" :title="member.character.name + ' - ' + member.character.realm + ' -> Armory'">
+              <tr v-for="member in sortedDB" id="characterRosterItem" style="background-color: #232323; color: #B1B1B1; border-bottom: 1px solid #000;"  @click="openArmoryWindow(guild.region, member.character.realm, member.character.name)" :title="member.character.name + ' - ' + member.character.realm + ' -> Armory'">
                 <td :style="{color: getClassColor(member.character.class)}">{{member.character.name}}</td>
                 <td :style="{color: getClassColor(member.character.class)}">{{getClassName(member.character.class)}}</td>
                 <td :style="{color: getRaceColor(member.character.race)}">{{getRaceName(member.character.race)}}</td>
@@ -260,7 +294,7 @@ export default {
   data () {
     return {
       customLookup: false,
-      lookup: {realm: 'Ravencrest', name: 'Hiatus'},
+      lookup: {region: 'EU', realm: 'Ravencrest', name: 'Hiatus'},
       guild: {},
       error: false,
       show: false,
@@ -278,12 +312,12 @@ export default {
       return this.sortArr(this.guild.members)
     },
     defaultLookupData () {
-      return this.lookup.realm === 'Ravencrest' && this.lookup.name === 'Hiatus'
+      return this.lookup.region === 'EU' && this.lookup.realm === 'Ravencrest' && this.lookup.name === 'Hiatus'
     }
   },
   methods: {
-    openArmoryWindow (realm, name) {
-      window.open('https://eu.battle.net/wow/en/character/' + realm + '/' + name + '/advanced')
+    openArmoryWindow (region, realm, name) {
+      window.open('https://' + region + '.battle.net/wow/en/character/' + realm + '/' + name + '/advanced')
     },
     sortArr (arr) {
       let temp = arr
@@ -394,19 +428,21 @@ export default {
       }
     },
     reset () {
+      this.lookup.region = 'EU'
       this.lookup.realm = 'Ravencrest'
       this.lookup.name = 'Hiatus'
       this.load()
     },
     load () {
-      if (this.guild.name === this.lookup.name && this.guild.realm === this.lookup.realm) {
+      if (this.guild.region === this.lookup.region && this.guild.name === this.lookup.name && this.guild.realm === this.lookup.realm) {
         return
       }
       this.loading = true
       this.guild = {}
       let fields = 'members'
-      let http = 'https://eu.api.battle.net/wow/guild/' + this.lookup.realm + '/' + this.lookup.name + '?fields=' + fields + '&locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
+      let http = 'https://' + this.lookup.region + '.api.battle.net/wow/guild/' + this.lookup.realm + '/' + this.lookup.name + '?fields=' + fields + '&locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
       this.$http.get(http).then((response) => {
+        this.guild.region = this.lookup.region
         this.guild.name = response.body.name
         this.guild.realm = response.body.realm
         this.guild.level = response.body.level
