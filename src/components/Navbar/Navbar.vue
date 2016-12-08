@@ -1,35 +1,45 @@
 <template>
-<div class="nav">
-  <div class="bottomborder">
-    <img id="sanctity_icon" src="../../assets/sanctity_icon.png">
-    <div class="navheader">
-      <ul>
-        <li :class="{active: !isForum()}" @click="moveTo('sanctity')">{{title}}</li>
-        <li class="header">|</li>
-        <li :class="{active: isForum()}" @click="moveTo('forum')">Forum</li>
-      </ul>
-    </div>
-    <transition name="fade" mode="out-in">
-    <div class="navbar">
-        <ul :key="page" v-if="!isForum()">
-          <li :class="{active: isActive('home')}" @click="moveTo('home')">Home</li>
-          <li :class="{active: isActive('about')}" @click="moveTo('about')">About</li>
-          <li :class="{active: isActive('apply')}" @click="moveTo('apply')">Apply</li>
-          <li :class="{active: isActive('roster')}" @click="moveTo('roster')">Roster</li>
-          <li :class="{active: isActive('timeline')}" @click="moveTo('timeline')">Timeline</li>
+<transition name="fade" mode="out-in">
+  <div v-if="!hideNavBar" class="nav">
+    <div class="bottomborder">
+      <!-- <img id="sanctity_icon" src="../../assets/sanctity_icon.png"> -->
+      <div class="navheader">
+        <ul>
+          <li :class="{active: !isForum()}" @click="moveTo('sanctity')">{{title}}</li>
+          <li class="header">|</li>
+          <li :class="{active: isForum()}" @click="moveTo('forum')">Forum</li>
         </ul>
+      </div>
+      <transition name="fade" mode="out-in">
+      <div class="navbar">
+          <ul :key="page" v-if="!isForum()">
+            <li :class="{active: isActive('home')}" @click="moveTo('home')">Home</li>
+            <li :class="{active: isActive('about')}" @click="moveTo('about')">About</li>
+            <li :class="{active: isActive('apply')}" @click="moveTo('apply')">Apply</li>
+            <li :class="{active: isActive('roster')}" @click="moveTo('roster')">Roster</li>
+            <li :class="{active: isActive('timeline')}" @click="moveTo('timeline')">Timeline</li>
+          </ul>
+      </div>
+      </transition>
     </div>
-    </transition>
   </div>
-</div>
+</transition>
 </template>
 
 <script>
 export default {
   props: ['title'],
   name: 'navbar',
+  mounted () {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  destroy () {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
   data () {
     return {
+      ypos: 0,
+      hideNavBar: false,
       validLocations: this.$store.getters.page.validLocations
     }
   },
@@ -42,6 +52,20 @@ export default {
     }
   },
   methods: {
+    handleScroll () {
+      if (window.pageYOffset > this.ypos) {
+        if (!this.hideNavBar) {
+          this.hideNavBar = true
+        }
+      } else {
+        if (this.hideNavBar) {
+          this.hideNavBar = false
+        }
+      }
+      if (this.ypos !== window.pageYOffset) {
+        this.ypos = window.pageYOffset
+      }
+    },
     moveTo (location) {
       if (location === 'forum' && this.page !== 'forum') {
         this.$store.dispatch('change', ['page', 'forum'])
@@ -85,6 +109,9 @@ export default {
   background-color: #2D2D2D;
   width: 100%;
   height: 75px;
+  -webkit-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.2);
+  -moz-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.2);
+  box-shadow: -2px 1px 7px 16px rgba(0,0,0,.2);
 }
 .bottomborder {
   width: 100%;
@@ -96,7 +123,6 @@ export default {
   position: fixed;
   top: 10px;
   left: 0px;
-
 }
 .navbar {
   position: fixed;

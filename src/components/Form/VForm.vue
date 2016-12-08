@@ -47,19 +47,24 @@
           <transition name="fade" mode="out-in">
             <div key="validName" v-if="validName">
               <holder title="Availability" subtitle="(8pm-11pm Server Time)" style="margin-top: 20px;">
-                <div id="tuesday" @click="change('tuesday')">Tuesday</div>
-                <div id="wednesday" @click="change('wednesday')">Wednesday</div>
-                <div id="thursday" @click="change('thursday')">Thursday</div>
-                <div id="sunday" @click="change('sunday')">Sunday</div><br><br>
+                <div style="width: 100px" id="tuesday" @click="change('tuesday')">Tuesday</div>
+                <div style="width: 100px" id="wednesday" @click="change('wednesday')">Wednesday</div>
+                <div style="width: 100px" id="thursday" @click="change('thursday')">Thursday</div>
+                <div style="width: 100px" id="sunday" @click="change('sunday')">Sunday</div><br><br>
               </holder>
-              <holder title="Attend Trial Raids" subtitle="Atttending trial raids forces you to be subject to NO LOOT" style="margin-top: 20px;">
-                <div key="trial" id="trial" @click="change('trial')">{{trial}}
-                </div>
-              </holder>
-              <holder title="Warcraft Logs" subtitle="WarcraftLogs Link" style="margin-top: 20px;">
-                <div id="warcraft" @click="change('warcraft')">{{warcraft}}</div><br>
+              <holder style="margin-top: 20px;">
+                <br><div style="width: 125px" key="trial" id="trial" @click="change('trial')">{{trial.text}}
+                </div><br>
                 <transition name="fade" mode="out-in">
-                  <div key="useWarcraft" v-if="warcraft === 'Yes'">
+                  <span v-if="trial.use">
+                    <div key="trial_warning" id="warning">
+                      <h2 style="color: #3C3C3C; font-weight: normal;">Warning: Trial raiders are subject to lower loot priority</h2>
+                    </div>
+                  </span>
+                </transition>
+                <br><div style="width: 125px" id="warcraft" @click="change('warcraft')">{{warcraft.text}}</div><br>
+                <transition name="fade" mode="out-in">
+                  <div key="useWarcraft" v-if="warcraft.use">
                     <transition name="fade" mode="out-in">
                       <input key="warcraftLogsLinkFound" v-if="!searching && character.warcraftLogsLink !== undefined" style="width: 75%" type="text" :value="character.warcraftLogsLink">
                       <div key="warcraftLogsLinkSearching" v-else-if="searching" class="loader">
@@ -72,17 +77,16 @@
                     </transition>
                   </div>
                 </transition>
-              </holder>
-              <holder title="Additional Information" subtitle="Any information you would like to let us know?" style="margin-top: 20px;">
-                <div id="additional" @click="change('additional')">{{additional}}</div><br>
+                <br><div style="width: 125px" id="additional" @click="change('additional')">{{additional.text}}</div><br>
                 <transition name="fade" mode="out-in">
-                  <textarea key="useAdditional" v-if="additional === 'Yes'"></textarea>
+                  <span key="useAdditional" v-if="additional.use">
+                    <textarea placeholder="Any information you would like to let us know?"></textarea>
+                  </span>
                 </transition>
-              </holder>
-              <holder style="margin-top: 20px;">
+                <br>
                 <div key="allValid" v-if="validMainSpec && validOffSpec">
                   <button @click="submitForm" class="v_form_submit">Submit</button>
-                </div>
+                </div><br>
               </holder>
             </div>
           </transition>
@@ -102,13 +106,15 @@
       <!-- <button @click="downloadPDF()" class="v_form_submit">Download</button> -->
       <br><table style="border: 1px solid #000;">
         <tr style="text-align: center; border-bottom: 1px solid #000;">
-          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Name</th>
-          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Class</th>
-          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Level</th>
-          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Race</th>
-          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Main Spec</th>
-          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Off Spec</th>
-          <th style="width: 14.2857142857%;">Item Level<br> [ <span style="color: #30C14B"> Max </span>/ <span style="color: #AA9D33">Equipped</span> ]</th>
+          <th style="width: 10%; border-right: 1px solid #000;">Name</th>
+          <th style="width: 10%; border-right: 1px solid #000;">Class</th>
+          <th style="width: 10%; border-right: 1px solid #000;">Level</th>
+          <th style="width: 10%; border-right: 1px solid #000;">Race</th>
+          <th style="width: 10%; border-right: 1px solid #000;">Main Spec</th>
+          <th style="width: 10%; border-right: 1px solid #000;">Off Spec</th>
+          <th style="width: 10%; border-right: 1px solid #000;">Item Level</th>
+          <th style="width: 10%; border-right: 1px solid #000;">Xavius Curve</th>
+          <th style="width: 10%;">Heroic ToV</th>
         </tr>
         <tr style="background-color: #232323; color: #B1B1B1;">
           <td style="border-right: 1px solid #000;">
@@ -146,7 +152,7 @@
               <span style="color: #5B8FEF;">{{offSpec}}</span>
             </span>
           </td>
-          <td>
+          <td style="border-right: 1px solid #000;">
             <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped === undefined">
               <span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>
             </span>
@@ -158,18 +164,73 @@
               <span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>
             </span>
           </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="!character.achievements.achievementsCompleted.includes(11194)"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
+          <td>
+            <span v-if="!character.achievements.achievementsCompleted.includes(11426)"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
         </tr>
-      </table><br>
-      <table v-if="character.profile.level === 110 && character.emeraldNightmare !== undefined" style="border: 1px solid #000;">
+      </table>
+      <br><table style="border: 1px solid #000;">
+        <tr style="text-align: center; border-bottom: 1px solid #000;">
+          <th style="width: 20%; border-right: 1px solid #000;">Tuesday</th>
+          <th style="width: 20%; border-right: 1px solid #000;">Wednesday</th>
+          <th style="width: 20%; border-right: 1px solid #000;">Thursday</th>
+          <th style="width: 20%;">Sunday</th>
+        </tr>
+        <tr style="background-color: #232323; color: #B1B1B1;">
+          <td style="border-right: 1px solid #000;">
+            <span v-if="!availability.tuesday"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="!availability.wednesday"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="!availability.thursday"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="!availability.sunday"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
+        </tr>
+      </table>
+      <br><table style="border: 1px solid #000;">
+        <tr style="text-align: center; border-bottom: 1px solid #000;">
+          <th style="width: 20%; border-right: 1px solid #000;">Attend Trial Raids</th>
+          <th style="width: 20%; border-right: 1px solid #000;">Warcraft Logs</th>
+          <th style="width: 20%;">Additional Info</th>
+        </tr>
+        <tr style="background-color: #232323; color: #B1B1B1;">
+          <td style="border-right: 1px solid #000;">
+            <span v-if="!trial.use"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="!warcraft.use"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="!additional.use"><i style="color: red;" class="fa fa-times" aria-hidden="true"></i></span>
+            <span v-else><i style="color: #22B522;" class="fa fa-check" aria-hidden="true"></i></span>
+          </td>
+        </tr>
+      </table>
+      <br><table v-if="character.profile.level === 110 && character.emeraldNightmare !== undefined" style="border: 1px solid #000;">
         <tr>
-          <th style="width: 25%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Boss</th>
-          <th style="width: 50%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">( <span style="color: #28AAB2">Heroic</span> | <span style="color: #D216E3">Mythic</span> )</th>
-          <th style="width: 20%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">Total</th>
+          <th style="width: 25%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Emerald Nightmare Boss</th>
+          <th style="width: 50%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">Difficulty: ( <span style="color: #28AAB2">Heroic</span> | <span style="color: #D216E3">Mythic</span> )</th>
+          <th style="width: 20%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">Total Kills</th>
         </tr>
-        <tr v-for="boss in character.emeraldNightmare" style="-webkit-text-stroke: .5px black;">
-          <td style="text-align: left; border-right: 1px solid #000;">{{boss.name}}</td>
-          <td style="border-right: 1px solid #000;" v-html="hKillsBar(boss.heroicKills, boss.mythicKills)"></td>
-          <td style="">{{boss.heroicKills + boss.mythicKills}}</td>
+        <tr v-for="boss in character.emeraldNightmare" style="background-color: #232323;">
+          <td style="text-align: left; color: #B1B1B1; border-right: 1px solid #000;">{{boss.name}}</td>
+          <td style="color: #000; font-weight: bold; border-right: 1px solid #000;" v-html="hKillsBar(boss.heroicKills, boss.mythicKills)"></td>
+          <td style="color: #B1B1B1;">{{boss.heroicKills + boss.mythicKills}}</td>
         </tr>
       </table><br>
     </holder>
@@ -217,9 +278,10 @@ export default{
       show: false,
       error: false,
       searching: false,
-      additional: 'No',
-      warcraft: 'No',
-      trial: 'No'
+      availability: {tuesday: false, wednesday: false, thursday: false, sunday: false},
+      additional: {text: 'Additional Information', use: false},
+      warcraft: {text: 'Send Warcraft Logs', use: false},
+      trial: {text: 'Attend Trial Raids', use: false}
     }
   },
   name: 'v-form',
@@ -411,23 +473,24 @@ export default{
     },
     change (x) {
       if (document.getElementById(x).style.backgroundColor === '' || document.getElementById(x).style.backgroundColor === 'rgb(208, 62, 62)') {
-        if (x === 'additional') {
-          this.additional = 'Yes'
-        } else if (x === 'warcraft') {
-          this.warcraft = 'Yes'
-        } else if (x === 'trial') {
-          this.trial = 'Yes'
-        }
         document.getElementById(x).style.backgroundColor = 'rgb(70, 193, 90)'
       } else if (document.getElementById(x).style.backgroundColor === 'rgb(70, 193, 90)') {
-        if (x === 'additional') {
-          this.additional = 'No'
-        } else if (x === 'warcraft') {
-          this.warcraft = 'No'
-        } else if (x === 'trial') {
-          this.trial = 'No'
-        }
         document.getElementById(x).style.backgroundColor = 'rgb(208, 62, 62)'
+      }
+      if (x === 'additional') {
+        this.additional.use = !this.additional.use
+      } else if (x === 'trial') {
+        this.trial.use = !this.trial.use
+      } else if (x === 'warcraft') {
+        this.warcraft.use = !this.warcraft.use
+      } else if (x === 'tuesday') {
+        this.availability.tuesday = !this.availability.tuesday
+      } else if (x === 'thursday') {
+        this.availability.thursday = !this.availability.thursday
+      } else if (x === 'wednesday') {
+        this.availability.wednesday = !this.availability.wednesday
+      } else if (x === 'sunday') {
+        this.availability.sunday = !this.availability.sunday
       }
     },
     getClassName (id) {
@@ -476,6 +539,7 @@ export default{
           http = 'https://eu.api.battle.net/wow/character/Ravencrest/' + name + '?' + fields + 'locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
           this.$http.get(http).then((response) => {
             this.character.achievements = response.body.achievements
+            console.log(this.character.achievements)
           }).then(() => {
             if (this.character.profile !== undefined) {
               fields = 'fields=appearance&'
@@ -662,6 +726,20 @@ export default{
     transform: rotate(-360deg) translateX(12px);
   }
 }
+#warning {
+  display: inline-block;
+  width: 50%;
+  padding: 10px 10px;
+  margin: 10px 10px;
+  background-color: #F6F864;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently not supported by any browser */
+  transition: background-color .5s
+}
 #tuesday, #wednesday, #thursday, #sunday, #warcraft, #additional, #trial {
   display: inline-block;
   width: 75px;
@@ -677,7 +755,7 @@ export default{
   cursor: pointer;
   transition: background-color .5s
 }
-#tuesday:hover, #wednesday:hover, #thursday:hover, #sunday:hover, #warcraft:hover, #additional:hover, #trial:hover {
+#warning:hover, #tuesday:hover, #wednesday:hover, #thursday:hover, #sunday:hover, #warcraft:hover, #additional:hover, #trial:hover {
   border: 1px solid #060606;
   padding: 9px 9px;
 }

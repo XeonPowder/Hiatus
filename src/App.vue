@@ -1,11 +1,13 @@
 <template>
-  <div id="app">
-    <navbar title="Hiatus"></navbar>
-    <transition name="fade" mode="out-in">
-      <home v-if="page === 'home'"></home>
-      <forum v-else-if="page === 'forum'"></forum>
-    </transition>
-  </div>
+  <transition name="fade" mode="out-in">
+    <div v-if="ready" id="app">
+      <navbar title="Hiatus"></navbar>
+      <transition name="fade" mode="out-in">
+        <home v-if="page === 'home'"></home>
+        <forum v-else-if="page === 'forum'"></forum>
+      </transition>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -19,7 +21,35 @@ export default {
     Forum,
     Home
   },
+  destroy () {
+    this.imageInterval = null
+  },
+  mounted () {
+    this.ready = true
+    this.imageInterval = setInterval(this.changeBackground, 60000)
+  },
+  data () {
+    return {
+      imageInterval: null,
+      images: ['http://warcraft.blizzplanet.com/wp-content/uploads/2015/08/legion-box-cover-keyart.jpg', 'http://www.hdwallpaper.nu/wp-content/uploads/2016/02/World_Warcraft_Legion_wallpaper_5.png', 'http://thegarethwoods.com/site/wp-content/uploads/2016/09/eyes.png'],
+      imageIndex: 0,
+      ready: false
+    }
+  },
+  methods: {
+    changeBackground () {
+      this.imageIndex++
+      if (this.imageIndex > 2) {
+        this.imageIndex = 0
+      }
+      let this2 = this
+      document.body.style['background-image'] = this2.imageUrl
+    }
+  },
   computed: {
+    imageUrl () {
+      return "url('" + this.images[this.imageIndex] + "')"
+    },
     page () {
       return this.$store.getters.page.page
     }
@@ -29,10 +59,13 @@ export default {
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Farsan');
-body{
+body {
+  background-image: url('http://warcraft.blizzplanet.com/wp-content/uploads/2015/08/legion-box-cover-keyart.jpg');
+  background-repeat: none;
+  background-attachment: fixed;
   background-color: #222222;
+  transition: background-image .5s ease-in-out;
 }
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
 }
