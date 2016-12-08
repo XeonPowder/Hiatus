@@ -123,6 +123,7 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
   border-bottom: 2px solid #ff8000;
 }
 .v_form_submit {
+  width: 25%;
   background-color: #ff9000;
   border: none;
   color: black;
@@ -139,13 +140,17 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
 .v_form_submit:active {
   outline: 1px solid #0f0f0f;
 }
+#characterRosterItem:hover {
+ background-color: #2E2E2E !important;
+ cursor: pointer;
+}
 </style>
 
 <template>
   <transition-group name="fade" mode="out-in">
     <holder style="position: relative;" key="input" v-if="customLookup">
       <i title="Close" @click="customLookup = !customLookup" style="cursor: pointer; position: absolute; left: 5px; top: 5px;" class="fa fa-window-close-o" aria-hidden="true"></i>
-      <table>
+      <table class="table">
         <tr>
           <th>Guild</th>
           <th>Realm</th>
@@ -155,8 +160,12 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
           <td><input @keyup.enter="load" v-model="lookup.realm" type="text"></input></td>
         </tr>
       </table>
-      <button @click="reset" class="v_form_submit">Reset</button>
-      <button @click="load" class="v_form_submit">Search</button>
+      <transition name="fade" mode="out-in">
+        <div v-if="!defaultLookupData">
+          <button @click="reset" class="v_form_submit">Reset</button>
+          <button @click="load" class="v_form_submit">Search</button>
+        </div>
+      </transition>
     </holder>
     <holder v-if="loading" key="loading" style="height: 38px; width: 100px">
       <transition name="fade" mode="out-in">
@@ -176,7 +185,7 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
       <h1 style="color: red">There was an error retrieving data!</h2>
     </holder>
     <div v-else-if="!error && !loading" key="data">
-      <holder style="position: relative;" title="General Information" key="general">
+      <holder v-if="about" style="position: relative;" title="General Information" key="general">
         <transition name="fade" mode="out-in">
           <i title="Custom Guild Lookup" v-if="!customLookup" @click="customLookup = !customLookup" style="cursor: pointer; position: absolute; left: 30px; top: 6px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>
         </transition>
@@ -201,32 +210,38 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
           </div>
         </transition>
       </holder>
-      <holder style="position: relative;" title="Roster" key="roster">
+      <holder v-if="roster" style="position: relative;" title="Roster" key="roster">
+        <transition name="fade" mode="out-in">
+          <i title="Custom Guild Lookup" v-if="!customLookup" @click="customLookup = !customLookup" style="cursor: pointer; position: absolute; left: 30px; top: 6px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        </transition>
         <transition name="fade" mode="out-in">
           <i title="Maximize" key="maximize2" v-if="!isToggled('roster')" class="fa fa-window-maximize" aria-hidden="true" style="cursor: pointer; position: absolute; top: 5px; left: 5px;" @click="toggle('roster')"></i>
           <i title="Minimize" key="minimize2" v-else-if="isToggled('roster')" class="fa fa-window-minimize" aria-hidden="true" style="cursor: pointer; position: absolute; top: 5px; left: 5px;" @click="toggle('roster')"></i>
         </transition>
         <transition name="fade" mode="out-in">
-          <table style="border-bottom: 1px solid #000;" v-if="isToggled('roster')" class="table">
-            <tr>
-              <th style="cursor: pointer;" @click="sortBy('cName')">Character Name</th>
-              <th style="cursor: pointer;" @click="sortBy('cClass')">Character Class</th>
-              <th style="cursor: pointer;" @click="sortBy('cRace')">Character Race</th>
-              <th style="cursor: pointer;" @click="sortBy('cLevel')">Level</th>
-              <th style="cursor: pointer;" @click="sortBy('cAchievementPoints')">Achievement Points</th>
-              <th style="cursor: pointer;" @click="sortBy('cGuildRank')">Guild Rank</th>
-              <th style="cursor: pointer;" @click="sortBy('cBattlegroup')">Battlegroup</th>
-            </tr>
-            <tr v-for="member in sortedDB">
-              <td :style="{color: getClassColor(member.character.class)}">{{member.character.name}}</td>
-              <td :style="{color: getClassColor(member.character.class)}">{{getClassName(member.character.class)}}</td>
-              <td :style="{color: getRaceColor(member.character.race)}">{{getRaceName(member.character.race)}}</td>
-              <td>{{member.character.level}}</td>
-              <td>{{member.character.achievementPoints}}</td>
-              <td>{{getGuildRank(member.rank)}}</td>
-              <td>{{member.character.battlegroup}}</td>
-            </tr>
-          </table>
+          <div v-if="isToggled('roster')">
+            <table style="border: 1px solid #000;" class="table">
+              <tr style="border-bottom: 1px solid #000;">
+                <th style="width: 14.2857142857%; border-right: 1px solid #000; cursor: pointer;" @click="sortBy('cName')">Character Name</th>
+                <th style="width: 14.2857142857%; border-right: 1px solid #000; cursor: pointer;" @click="sortBy('cClass')">Character Class</th>
+                <th style="width: 14.2857142857%; border-right: 1px solid #000; cursor: pointer;" @click="sortBy('cRace')">Character Race</th>
+                <th style="width: 14.2857142857%; border-right: 1px solid #000; cursor: pointer;" @click="sortBy('cLevel')">Level</th>
+                <th style="width: 14.2857142857%; border-right: 1px solid #000; cursor: pointer;" @click="sortBy('cAchievementPoints')">Achievement Points</th>
+                <th style="width: 14.2857142857%; border-right: 1px solid #000; cursor: pointer;" @click="sortBy('cGuildRank')">Guild Rank</th>
+                <th style="width: 14.2857142857%; cursor: pointer;" @click="sortBy('cBattlegroup')">Battlegroup</th>
+              </tr>
+              <tr v-for="member in sortedDB" id="characterRosterItem" style="background-color: #232323; color: #B1B1B1; border-bottom: 1px solid #000;"  @click="openArmoryWindow(member.character.realm, member.character.name)" :title="member.character.name + ' - ' + member.character.realm + ' -> Armory'">
+                <td :style="{color: getClassColor(member.character.class)}">{{member.character.name}}</td>
+                <td :style="{color: getClassColor(member.character.class)}">{{getClassName(member.character.class)}}</td>
+                <td :style="{color: getRaceColor(member.character.race)}">{{getRaceName(member.character.race)}}</td>
+                <td style="">{{member.character.level}}</td>
+                <td>{{member.character.achievementPoints}}</td>
+                <td>{{getGuildRank(member.rank)}}</td>
+                <td>{{member.character.battlegroup}}</td>
+              </tr>
+            </table>
+            <br>
+          </div>
         </transition>
       </holder>
     </div>
@@ -237,6 +252,7 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
 import Holder from '../Holder/Holder'
 import $util from '../../util.js'
 export default {
+  props: ['about', 'roster'],
   components: {
     Holder
   },
@@ -249,7 +265,7 @@ export default {
       error: false,
       show: false,
       loading: false,
-      toggled: {'general': true, 'roster': false},
+      toggled: {'general': true, 'roster': true},
       sort: 'rank',
       sortInverse: false
     }
@@ -259,13 +275,16 @@ export default {
   },
   computed: {
     sortedDB () {
-      if (this.guild.members !== undefined) {
-        return this.sortArr(this.guild.members)
-      }
-      return null
+      return this.sortArr(this.guild.members)
+    },
+    defaultLookupData () {
+      return this.lookup.realm === 'Ravencrest' && this.lookup.name === 'Hiatus'
     }
   },
   methods: {
+    openArmoryWindow (realm, name) {
+      window.open('https://eu.battle.net/wow/en/character/' + realm + '/' + name + '/advanced')
+    },
     sortArr (arr) {
       let temp = arr
       let this2 = this
@@ -377,12 +396,14 @@ export default {
     reset () {
       this.lookup.realm = 'Ravencrest'
       this.lookup.name = 'Hiatus'
+      this.load()
     },
     load () {
       if (this.guild.name === this.lookup.name && this.guild.realm === this.lookup.realm) {
         return
       }
       this.loading = true
+      this.guild = {}
       let fields = 'members'
       let http = 'https://eu.api.battle.net/wow/guild/' + this.lookup.realm + '/' + this.lookup.name + '?fields=' + fields + '&locale=en_GB&apikey=zn2vjjju6qpav96datyqh78smc6s3wax'
       this.$http.get(http).then((response) => {

@@ -7,9 +7,9 @@ const raceName = (characterRace) => {
     case 3:
       return 'Dwarf'
     case 4:
-      return 'Undead'
-    case 5:
       return 'Night Elf'
+    case 5:
+      return 'Undead'
     case 6:
       return 'Tauren'
     case 7:
@@ -34,14 +34,14 @@ const raceColor = (characterRace) => {
   switch (characterRace) {
     case 1:
     case 3:
-    case 5:
+    case 4:
     case 7:
     case 11:
     case 22:
     case 25:
       return '#0066ff'
     case 2:
-    case 4:
+    case 5:
     case 6:
     case 8:
     case 9:

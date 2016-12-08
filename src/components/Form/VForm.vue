@@ -89,85 +89,89 @@
         </div>
       </transition>
     </div>
-    <div key="submitted" v-else-if="submitted">
+    <div key="submitted" v-else>
       <holder>
         <h2 id="submitted">Application Sent!</h2>
-        <button @click="submitted = false" class="v_form_submit">Return</button>
+        <button @click="resetData()" class="v_form_submit">Return</button>
+        <button @click="downloadPDF()" class="v_form_submit">Download</button>
       </holder>
     </div>
   </transition>
   <transition name="fade" mode="out-in">
-    <holder key="showcharacter" v-if="show && character !== undefined && character.profile !== undefined" style="margin-top: 20px;">
-      <div>
-        <h3>
-          <span v-if="character.profile.name !== undefined">
-            <span :style="{color: getClassColor(character.profile.class)}">{{character.profile.name}}</span>
-          </span>
-          <span v-if="character.profile.race !== undefined && character.profile.class === undefined">
-            [<span :style="{color: getRaceColor(character.profile.race)}"> {{getRaceName(character.profile.race)}} </span>]
-          </span>
-          <span v-if="character.profile.race !== undefined && character.profile.class !== undefined">
-            [<span :style="{color: getRaceColor(character.profile.race)}"> {{getRaceName(character.profile.race)}} </span>/
-            <span :style="{color: getClassColor(character.profile.class)}"> {{getClassName(character.profile.class)}} </span>]
-          </span>
-          <span v-else-if="character.profile.class !== undefined && character.profile.race === undefined">
-            [<span :style="{color: getClassColor(character.profile.class)}"> {{getClassName(character.profile.class)}} </span>]
-          </span>
-          <span v-if="validMainSpec && !validOffSpec">
-            [<span style="color: #7A5BEF;"> {{mainSpec}} </span>]
-          </span>
-          <span v-else-if="validMainSpec && validOffSpec">
-            [<span style="color: #7A5BEF;"> {{mainSpec}} </span>/
-            <span style="color: #5B8FEF;"> {{offSpec}} </span>]
-          </span>
-          <span v-else-if="validOffSpec && !validMainSpec">
-            [<span style="color: #5B8FEF;"> {{offSpec}} </span>]
-          </span>
-        </h3>
-      </div>
-      <div>
-        <h3>
-          <span v-if="character.profile.level !== undefined">
-            <span v-if="character.profile.level !== 110">
-              Level [<span style="color: #C64F79"> {{character.profile.level}} </span> / <span style="color: #FF005A"> 110 </span>]
+    <holder id="characterData" key="showcharacter" v-if="show && character !== undefined && character.profile !== undefined" style="margin-top: 20px;">
+      <!-- <button @click="downloadPDF()" class="v_form_submit">Download</button> -->
+      <br><table style="border: 1px solid #000;">
+        <tr style="text-align: center; border-bottom: 1px solid #000;">
+          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Name</th>
+          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Class</th>
+          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Level</th>
+          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Race</th>
+          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Main Spec</th>
+          <th style="width: 14.2857142857%; border-right: 1px solid #000;">Off Spec</th>
+          <th style="width: 14.2857142857%;">Item Level<br> [ <span style="color: #30C14B"> Max </span>/ <span style="color: #AA9D33">Equipped</span> ]</th>
+        </tr>
+        <tr style="background-color: #232323; color: #B1B1B1;">
+          <td style="border-right: 1px solid #000;">
+            <span v-if="character.profile.name !== undefined">
+              <span :style="{color: getClassColor(character.profile.class)}">{{character.profile.name}}</span>
             </span>
-            <span v-else-if="character.profile.level === 110">
-              Level [<span style="color: #C64F79"> {{character.profile.level}} </span>]
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="character.profile.class !== undefined">
+              <span :style="{color: getClassColor(character.profile.class)}">{{getClassName(character.profile.class)}}</span>
             </span>
-          </span>
-        </h3>
-      </div>
-      <div>
-        <h3>
-          <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped === undefined">
-            Item Level [<span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>]
-          </span>
-          <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped !== undefined">
-            Item Level [<span style="color: #30C14B"> Max </span>/ <span style="color: #AA9D33">Equipped</span> ] : [<span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>/
-            <span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>]
-          </span>
-          <span v-if="character.items.averageItemLevel === undefined && character.items.averageItemLevelEquipped !== undefined">
-            Item Level [<span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>]
-          </span>
-        </h3>
-      </div>
-      <div v-if="character.profile.level === 110 && character.emeraldNightmare !== undefined">
-        <h3>
-          Raid Progression:
-        </h3>
-        <table>
-          <tr>
-            <th style="width: 25%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Boss</th>
-            <th style="width: 50%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">( <span style="color: #28AAB2">Heroic</span> | <span style="color: #D216E3">Mythic</span> )</th>
-            <th style="width: 20%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">Total</th>
-          </tr>
-          <tr v-for="boss in character.emeraldNightmare">
-            <td style="text-align: left; border-right: 1px solid #000;">{{boss.name}}</td>
-            <td style="border-right: 1px solid #000; " v-html="hKillsBar(boss.heroicKills, boss.mythicKills)"></td>
-            <td style="">{{boss.heroicKills + boss.mythicKills}}</td>
-          </tr>
-        </table>
-      </div><br>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="character.profile.level !== undefined">
+              <span v-if="character.profile.level !== 110">
+                <span style="color: #C64F79"> {{character.profile.level}} </span> / <span style="color: #FF005A"> 110 </span>
+              </span>
+              <span v-if="character.profile.level === 110">
+                <span style="color: #C64F79"> {{character.profile.level}} </span>
+              </span>
+            </span>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="character.profile.race !== undefined">
+              <span :style="{color: getRaceColor(character.profile.race)}">{{getRaceName(character.profile.race)}}</span>
+            </span>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="validMainSpec">
+              <span style="color: #7A5BEF;">{{mainSpec}}</span>
+            </span>
+          </td>
+          <td style="border-right: 1px solid #000;">
+            <span v-if="validOffSpec">
+              <span style="color: #5B8FEF;">{{offSpec}}</span>
+            </span>
+          </td>
+          <td>
+            <span v-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped === undefined">
+              <span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>
+            </span>
+            <span v-else-if="character.items.averageItemLevel !== undefined && character.items.averageItemLevelEquipped !== undefined">
+              <span style="color: #30C14B"> {{character.items.averageItemLevel}} </span>/
+              <span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>
+            </span>
+            <span v-else-if="character.items.averageItemLevel === undefined && character.items.averageItemLevelEquipped !== undefined">
+              <span style="color: #AA9D33"> {{character.items.averageItemLevelEquipped}} </span>
+            </span>
+          </td>
+        </tr>
+      </table><br>
+      <table v-if="character.profile.level === 110 && character.emeraldNightmare !== undefined" style="border: 1px solid #000;">
+        <tr>
+          <th style="width: 25%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Boss</th>
+          <th style="width: 50%; text-align: left; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">( <span style="color: #28AAB2">Heroic</span> | <span style="color: #D216E3">Mythic</span> )</th>
+          <th style="width: 20%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">Total</th>
+        </tr>
+        <tr v-for="boss in character.emeraldNightmare" style="-webkit-text-stroke: .5px black;">
+          <td style="text-align: left; border-right: 1px solid #000;">{{boss.name}}</td>
+          <td style="border-right: 1px solid #000;" v-html="hKillsBar(boss.heroicKills, boss.mythicKills)"></td>
+          <td style="">{{boss.heroicKills + boss.mythicKills}}</td>
+        </tr>
+      </table><br>
     </holder>
     <holder key="showerror" v-else-if="!searching && !invalidNameRegex && !validName && name.length > 1" style="margin-top: 20px;">
       <h1 style="color: red"><span style="position: relative; top: 15px;">Character not found.</span></h1><br>
@@ -188,6 +192,8 @@
 </template>
 
 <script>
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 import $util from '../../util.js'
 import Holder from '../Holder/Holder'
 export default{
@@ -309,7 +315,7 @@ export default{
       }
     },
     isValidCharacterName (name, e) {
-      let regex = new RegExp('(\\d)|([^a-zA-Z]+)')
+      let regex = new RegExp('(\\d)|([^a-zA-ZÀ-ž]+)')
       if (this.character !== undefined && this.character.profile !== undefined && this.character.profile.name === name) {
         clearTimeout(this.validNameTimeout)
         this.show = true
@@ -318,12 +324,15 @@ export default{
         this.searching = false
         return
       }
-      if (name.length < 2 || (name.length < 2 && (this.character !== undefined && this.character.profile === undefined))) {
+      if ((name.length < 2 && (this.character !== undefined && this.character.profile === undefined))) {
         this.validName = false
         this.searching = false
         this.invalidNameRegex = false
         this.show = false
         clearTimeout(this.validNameTimeout)
+        return
+      }
+      if (name.length < 2) {
         return
       }
       if (regex.test(name)) {
@@ -377,8 +386,28 @@ export default{
       this.warcraft = 'No'
       this.trial = 'No'
     },
+    /* eslint-disable */
+    downloadPDF () {
+      let this2 = this
+      let div = document.querySelector('#characterData')
+      html2canvas(div, {
+        onrendered: function (canvas) {
+          let imgData = canvas.toDataURL('image/png', 1.0)
+          let pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: [canvas.width, canvas.height]
+          })
+          pdf.addImage(imgData, 'png', 0, 0, canvas.width, canvas.height)
+
+          let saveName = this2.character.profile.name + '_' + this2.character.profile.realm + '_Application_' + Date.now() + '.pdf'
+          pdf.save(saveName)
+      }
+      })
+    },
+    /* eslint-enable */
     submitForm () {
-      this.resetData()
+      this.submitted = true
     },
     change (x) {
       if (document.getElementById(x).style.backgroundColor === '' || document.getElementById(x).style.backgroundColor === 'rgb(208, 62, 62)') {
@@ -704,6 +733,7 @@ textarea:focus {
   border-bottom: 2px solid #ff8000;
 }
 .v_form_submit {
+  width: 25%;
   background-color: #ff9000;
   border: none;
   color: black;

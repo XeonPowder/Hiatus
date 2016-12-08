@@ -2,9 +2,10 @@
   <div class="homepage">
     <transition name="fade" mode="out-in">
       <div :key="location">
-        <holder v-if="location !== 'apply' && location !== 'about'" :title="title" :subtitle="subtitle">
+        <holder v-if="location !== 'apply' && location !== 'about' && location !== 'roster'" :title="title" :subtitle="subtitle">
         </holder>
-        <info v-else-if="location === 'about'"></info>
+        <info v-else-if="location === 'about'" about="true"></info>
+        <info v-else-if="location === 'roster'" roster="true"></info>
         <v-form v-else-if="location === 'apply'"></v-form>
       </div>
     </transition>
