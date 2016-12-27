@@ -2,6 +2,16 @@
 <transition name="fade" mode="out-in">
   <div v-if="!hideNavBar" class="nav">
     <div class="bottomborder">
+      <div id="logoHolder">
+        <svg id='logo' :style='logoStyle'
+          xmlns='http://www.w3.org/2000/svg'
+          viewBox='0 0 256 256'
+          width='256' height='256'
+          fill='none'
+          stroke='red' stroke-width='3'>
+          <path :d='path.path' />
+        </svg>
+      </div>
       <!-- <img id="sanctity_icon" src="../../assets/sanctity_icon.png"> -->
       <div class="navheader">
         <ul>
@@ -39,6 +49,12 @@ export default {
   props: ['title'],
   name: 'navbar',
   mounted () {
+    let this2 = this
+    this.svgInterval = setTimeout(() => {
+      this2.path.end = 0
+      this2.path.ani = 'dash2 2s linear forwards'
+      this2.path.stroke = 1000
+    }, 10000)
     window.addEventListener('scroll', this.handleScroll)
     $('.text').html((i, html) => {
       let chars = $.trim(html).split('')
@@ -50,6 +66,8 @@ export default {
   },
   data () {
     return {
+      svgInterval: null,
+      path: {path: 'M0 128 L128 48 L256 128 L128 206 Z M24 128 L128 64 L234 128 L128 190 Z M64 128 L128 90 L192 128 L129 168 Z M80 128 L128 100 L176 128 L128 158 Z', end: -1, stroke: 100, ani: 'dash1 10s linear infinite'},
       showLink: false,
       ypos: 0,
       hideNavBar: false,
@@ -57,6 +75,13 @@ export default {
     }
   },
   computed: {
+    logoStyle () {
+      let style = 'animation: ' + this.path.ani + ';stroke-dasharray: ' + this.path.stroke + ';'
+      if (this.path.end !== -1) {
+        style += 'stroke-dashoffset: ' + this.path.stroke + ';'
+      }
+      return style
+    },
     page () {
       return this.$store.getters.page.page
     },
@@ -116,6 +141,31 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#logoHolder {
+  position: fixed;
+  top: -20px;
+  left: 4px;
+  width: 100%;
+}
+#logo {
+  margin-left:auto; 
+  margin-right:auto; 
+  display:block;
+  width: 128px;
+  height: auto;
+  stroke-dasharray: 250;
+  animation: dash1 10s linear infinite;
+}
+@keyframes dash1 {
+  to {
+    stroke-dashoffset: 1000;
+  }
+}
+@keyframes dash2 {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
 .nav {
   z-index: 99999;
   font-size: large;
@@ -124,7 +174,7 @@ export default {
   left: 0px;
   background-color: #2D2D2D;
   width: 100%;
-  height: 75px;
+  height: 86px;
   -webkit-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.2);
   -moz-box-shadow: -2px 1px 7px 16px rgba(0,0,0,.2);
   box-shadow: -2px 1px 7px 16px rgba(0,0,0,.2);
@@ -133,7 +183,7 @@ export default {
   width: 100%;
   border-bottom: 1px solid #C1C1C1;
   position: fixed;
-  top: 75px;
+  top: 86px;
 }
 .navheader {
   position: fixed;
@@ -183,31 +233,6 @@ li:hover:not(.active):not(.header) {
 .active {
   border-bottom: 1px solid #ff8000;
   transition: border-bottom 1s;
-}
-
-#sanctity_icon {
-  position: fixed;
-  top: 10px;
-  margin: 0px -62.5px;
-  -webkit-transition: -webkit-transform 16s ease-in-out;
-  -moz-transition:    -moz-transform 16s ease-in-out;
-  -ms-transition:     -ms-transform 16s ease-in-out;
-  -o-transition:      -o-transform 16s ease-in-out;
-  transition:         transform 16s ease-in-out;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Chrome/Safari/Opera */
-  -khtml-user-select: none; /* Konqueror */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently not supported by any browser */
-
-}
-#sanctity_icon:hover {
-  -webkit-transform: rotate(2880deg);
-  -moz-transform:    rotate(2880deg);
-  -ms-transform:     rotate(2880deg);
-  -o-transform:      rotate(2880deg);
-  transform:         rotate(2880deg);
 }
 .rainbow,
 .rainbow-hover:hover {
