@@ -3,11 +3,11 @@
   <div v-if="!hideNavBar" class="nav">
     <div class="bottomborder">
       <div id="logoHolder">
-        <svg id='logo--1'
+        <svg @animationend='growDot()' id='logo--1'
           xmlns='http://www.w3.org/2000/svg'
           viewBox='0 0 256 256'
           width='256' height='256'
-          fill='none'
+          fill='red'
           stroke='red' stroke-width='3'>
           <path :d='path2.paths[0]' />
         </svg>
@@ -15,7 +15,7 @@
           xmlns='http://www.w3.org/2000/svg'
           viewBox='0 0 256 256'
           width='256' height='256'
-          fill='none'
+          fill='red'
           stroke='red' stroke-width='3'>
           <path :d='path2.paths[1]' />
         </svg>
@@ -23,7 +23,7 @@
           xmlns='http://www.w3.org/2000/svg'
           viewBox='0 0 256 256'
           width='256' height='256'
-          fill='none'
+          fill='red'
           stroke='red' stroke-width='3'>
           <path :d='path2.paths[2]' />
         </svg>
@@ -31,47 +31,15 @@
           xmlns='http://www.w3.org/2000/svg'
           viewBox='0 0 256 256'
           width='256' height='256'
-          fill='none'
+          fill='red'
           stroke='red' stroke-width='3'>
           <path :d='path2.paths[3]' />
-        </svg>
-        <svg id='logo--5'
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 256 256'
-          width='256' height='256'
-          fill='none'
-          stroke='red' stroke-width='3'>
-          <path :d='path2.paths[4]' />
-        </svg>
-        <svg id='logo--6'
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 256 256'
-          width='256' height='256'
-          fill='none'
-          stroke='red' stroke-width='3'>
-          <path :d='path2.paths[5]' />
-        </svg>
-        <svg id='logo--7'
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 256 256'
-          width='256' height='256'
-          fill='none'
-          stroke='red' stroke-width='3'>
-          <path :d='path2.paths[6]' />
-        </svg>
-        <svg @animationend='growDot()' id='logo--8'
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 256 256'
-          width='256' height='256'
-          fill='none'
-          stroke='red' stroke-width='3'>
-          <path :d='path2.paths[7]' />
         </svg>
         <svg id='logo--dot' :style='logoDotStyle'
           xmlns='http://www.w3.org/2000/svg'
           viewBox='0 0 256 256'
           width='256' height='256'>
-          <circle cx="128" cy="128" r="3" stroke="red" stroke-width="4" fill="red" />
+          <circle cx="128" cy="128" r="5" stroke="red" stroke-width="4" fill="red" />
         </svg>
       </div>
       <!-- <img id="sanctity_icon" src="../../assets/sanctity_icon.png"> -->
@@ -130,7 +98,7 @@ export default {
     return {
       svgInterval: null,
       logoDotStyle: '',
-      path2: {paths: ['M128 48 L0 128 L128 206', 'M128 48 L256 128 L128 206', 'M128 64 L24 128 L128 190', 'M128 64 L234 128 L128 190', 'M128 90 L64 128 L129 168', 'M128 90 L192 128 L129 168', 'M128 100 L80 128 L128 158', 'M128 100 L176 128 L128 158']},
+      path2: {paths: ['M128 48 L0 128 L128 206 L128 190 L24 128 L128 64 Z', 'M128 48 L256 128 L128 206 L128 190 L234 128 L128 64 Z', 'M128 90 L64 128 L129 168 L128 158 L80 128 L128 100 Z', 'M128 90 L192 128 L129 168 L128 158 L176 128 L128 100 Z']},
       path: {path: 'M0 128 L128 48 L256 128 L128 206 Z M24 128 L128 64 L234 128 L128 190 Z M64 128 L128 90 L192 128 L129 168 Z M80 128 L128 100 L176 128 L128 158 Z', end: -1, stroke: 100, ani: 'dash1 10s linear infinite'},
       showLink: false,
       ypos: 0,
@@ -218,7 +186,7 @@ export default {
   margin-left:auto; 
   margin-right:auto;
 }
-#logo--1, #logo--2, #logo--3, #logo--4, #logo--5, #logo--6, #logo--7, #logo--8, #logo--dot {
+#logo--1, #logo--2, #logo--3, #logo--4, #logo--dot {
   position: fixed;
   top: -20px;
   margin-left: -64px;
@@ -226,28 +194,16 @@ export default {
   height: auto;
 }
 #logo--1{
-  animation: side-slam-left 2s linear;
-}
-#logo--3 {
   animation: side-slam-left 3s linear;
 }
-#logo--5 {
-  animation: side-slam-left 4s linear;
-}
-#logo--7 {
-  animation: side-slam-left 5s linear;
+#logo--3 {
+  animation: side-slam-left 2s linear;
 }
 #logo--2 {
-  animation: side-slam-right 2s linear;
-}
-#logo--4 {
   animation: side-slam-right 3s linear;
 }
-#logo--6 {
-  animation: side-slam-right 4s linear;
-}
-#logo--8 {
-  animation: side-slam-right 5s linear;
+#logo--4 {
+  animation: side-slam-right 2s linear;
 }
 #logo--dot {
   display: none;
