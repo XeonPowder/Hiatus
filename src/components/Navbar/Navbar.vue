@@ -2,7 +2,7 @@
 <transition name="fade" mode="out-in">
   <div v-if="!hideNavBar" class="nav">
     <div class="bottomborder">
-      <div id="logoHolder">
+      <!-- <div id="logoHolder">
         <svg @animationend='growDot()' id='logo--1'
           xmlns='http://www.w3.org/2000/svg'
           viewBox='0 0 256 256'
@@ -41,8 +41,8 @@
           width='256' height='256'>
           <circle cx="128" cy="128" r="5" stroke="red" stroke-width="4" fill="red" />
         </svg>
-      </div>
-      <!-- <img id="sanctity_icon" src="../../assets/sanctity_icon.png"> -->
+      </div> -->
+      <img id="sanctity_icon" src="../../assets/sanctity_icon.png">
       <div class="navheader">
         <ul>
           <li :class="{active: !isForum()}" @click="moveTo('sanctity')">{{title}}</li>
@@ -53,7 +53,6 @@
             <li class="rainbow" @mouseout="showLink = false" @mouseover="showLink = true" @click="openDiscord()">
               <span class="text">Discord</span>
             </li>
-            
           </span>
         </ul>
       </div>
@@ -183,7 +182,7 @@ export default {
   left: 4px;
   width: 100%;
   display: block;
-  margin-left:auto; 
+  margin-left:auto;
   margin-right:auto;
 }
 #logo--1, #logo--2, #logo--3, #logo--4, #logo--dot {
